@@ -95,15 +95,18 @@ inner join film_category fc on fc.film_id = f.film_id
 inner join category c on c.category_id=fc.category_id
 where c.name = "Family";
 -- 7e
-select title, count(*) AS 'Number of Rentals'
+select title, count(*) AS 'Number_of_Rentals'
 from film f
 inner join inventory i on f.film_id = i.film_id
-inner join rental r on i.inventory_id = r.inventory_id;
+inner join rental r on i.inventory_id = r.inventory_id
+GROUP BY title 
+ORDER BY Number_of_Rentals DESC;
 -- 7f
 select store_id, sum(amount) as "total sales"
 from payment p
 inner join rental r on r.rental_id = p.rental_id
-inner join staff s on s.staff_id = r.staff_id;
+inner join staff s on s.staff_id = r.staff_id
+GROUP BY store_id;
 -- 7g
 select store_id, city, country
 from store s 
@@ -111,4 +114,27 @@ inner join address a on s.store_id = a.address_id
 inner join city c on c.city_id = a.city_id
 inner join country ct on ct.country_id = c.country_id;
 -- 7h
-
+select name, sum(amount) as "Gross_Revenue"
+from category c
+left join film_category fc on fc.category_id = c.category_id
+left join inventory i on fc.film_id=i.film_id
+left join rental r on r.inventory_id = i.inventory_id
+left join payment p on p.rental_id = r.rental_id
+GROUP BY name
+ORDER BY Gross_Revenue DESC
+LIMIT 5;
+-- 8a
+CREATE VIEW top_five_genres AS
+select name, sum(amount) as "Gross_Revenue"
+from category c
+left join film_category fc on fc.category_id = c.category_id
+left join inventory i on fc.film_id=i.film_id
+left join rental r on r.inventory_id = i.inventory_id
+left join payment p on p.rental_id = r.rental_id
+GROUP BY name
+ORDER BY Gross_Revenue DESC
+LIMIT 5;
+-- 8b
+select * from top_five_genres;
+-- 8c
+DROP VIEW IF EXISTS top_five_genres;
