@@ -64,7 +64,51 @@ FROM customer
 INNER JOIN payment ON customer.customer_id = payment.customer_id
 GROUP BY last_name;
 -- 7a
-SELECT title FROM film
-WHERE title LIKE "K%" or title Like "Q%";
-
+SELECT f.title, l.name 
+FROM film f, language l
+WHERE f.language_id = l.language_id
+AND title LIKE "K%" 
+OR title LIKE "Q%"
+AND
+(SELECT name
+FROM language WHERE name = "ENGLISH");
+-- 7b
+SELECT film_id, first_name, last_name
+FROM film_actor, actor
+WHERE film_actor.actor_id=actor.actor_id
+AND
+film_id = 
+(SELECT film_id 
+FROM film 
+WHERE title = "Alone Trip");
+-- 7c
+select email, country
+from customer c
+inner join address a on c.customer_id = a.address_id
+inner join city y on y.city_id=a.city_id
+inner join country co on y.country_id = co.country_id
+where co.country = "Canada";
+-- 7d
+select title, name
+from film f
+inner join film_category fc on fc.film_id = f.film_id
+inner join category c on c.category_id=fc.category_id
+where c.name = "Family";
+-- 7e
+select title, count(*) AS 'Number of Rentals'
+from film f
+inner join inventory i on f.film_id = i.film_id
+inner join rental r on i.inventory_id = r.inventory_id;
+-- 7f
+select store_id, sum(amount) as "total sales"
+from payment p
+inner join rental r on r.rental_id = p.rental_id
+inner join staff s on s.staff_id = r.staff_id;
+-- 7g
+select store_id, city, country
+from store s 
+inner join address a on s.store_id = a.address_id
+inner join city c on c.city_id = a.city_id
+inner join country ct on ct.country_id = c.country_id;
+-- 7h
 
